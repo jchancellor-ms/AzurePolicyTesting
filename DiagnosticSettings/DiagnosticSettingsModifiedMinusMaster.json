@@ -1,0 +1,89 @@
+{
+    "mode": "All",
+    "policyRule": {
+        "if": {
+            "allOf": [        
+                {
+                    "field": "type",
+                    "in": "[parameters('listOfResourceTypes')]"
+                },
+                {
+                    "not": {
+                        "allOf": [
+                            {
+                            "field": "type",
+                            "equals": "Microsoft.Sql/servers/databases"
+                            },
+                            {
+                            "field": "name",
+                            "MatchInsensitively": "master"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "not": {
+                        "allOf": [
+                            {
+                            "field": "type",
+                            "equals": "Microsoft.Sql/servers/databases"
+                            },
+                            {
+                            "field": "name",
+                            "MatchInsensitively": "DataWarehouse"
+                            }
+                        ]
+                    }
+                }
+            ]    
+        },
+        "then": {
+            "effect": "AuditIfNotExists",
+            "details": {
+                "type": "Microsoft.Insights/diagnosticSettings",
+                "existenceCondition": {
+                    "anyOf": [
+                        {
+                            "allOf": [
+                                {
+                                    "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                                    "equals": "true"
+                                },
+                                {
+                                    "field": "Microsoft.Insights/diagnosticSettings/metrics.enabled",
+                                    "equals": "true"
+                                }
+                            ]
+                        },
+                        {
+                            "allOf": [
+                                {
+                                   "not": {
+                                        "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                                        "notEquals": "true"
+                                   }
+                                },
+                                {
+                                    "not": {
+                                        "field": "Microsoft.Insights/diagnosticSettings/metrics.enabled",
+                                        "notEquals": "true"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "parameters": {
+        "listOfResourceTypes": {
+            "type": "Array",
+            "metadata": {
+                "displayName": "Resource Types",
+                "description": null,
+                "strongType": "resourceTypes"
+            }
+        }
+    }
+}

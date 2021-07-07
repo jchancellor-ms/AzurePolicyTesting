@@ -1,0 +1,57 @@
+{
+    "mode": "All",
+    "policyRule": {
+        "if": {
+            "field": "type",
+            "in": "[parameters('listOfResourceTypes')]"
+        },
+        "then": {
+            "effect": "AuditIfNotExists",
+            "details": {
+                "type": "Microsoft.Insights/diagnosticSettings",
+                "existenceCondition": {
+                    "anyOf": [
+                        {
+                            "allOf": [
+                                {
+                                    "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                                    "equals": "true"
+                                },
+                                {
+                                    "field": "Microsoft.Insights/diagnosticSettings/metrics.enabled",
+                                    "equals": "true"
+                                }
+                            ]
+                        },
+                        {
+                            "allOf": [
+                                {
+                                   "not": {
+                                        "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                                        "notEquals": "true"
+                                   }
+                                },
+                                {
+                                    "not": {
+                                        "field": "Microsoft.Insights/diagnosticSettings/metrics.enabled",
+                                        "notEquals": "true"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "parameters": {
+        "listOfResourceTypes": {
+            "type": "Array",
+            "metadata": {
+                "displayName": "Resource Types",
+                "description": null,
+                "strongType": "resourceTypes"
+            }
+        }
+    }
+}
