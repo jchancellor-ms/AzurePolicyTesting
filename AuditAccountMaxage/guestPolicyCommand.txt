@@ -1,0 +1,8 @@
+New-GuestConfigurationPolicy `
+    -ContentUri '<URI + SAS key here>' `
+    -DisplayName 'Audit Account Maxage.' `
+    -Description 'Audit to determine if account Maxage value is set to 60.' `
+    -Path '<path to write the JSON policy File>' `
+    -Platform 'Windows' `
+    -Version 1.0.0 `
+    -Verbose | Publish-GuestConfigurationPolicy
